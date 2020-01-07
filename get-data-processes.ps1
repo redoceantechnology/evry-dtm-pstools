@@ -18,19 +18,20 @@ $output = New-Object System.Collections.Generic.List[System.Object]
 
 for ($i=0; $i -lt $processes.length; $i++)  {
     
-    #"fromRelationships": {
-    #  "isProcessOf"
     $hclient = $processes[$i].fromRelationships.isProcessOf[0]
-    $listeningports = $processes[$i].listenPorts -join ' ' 
-    $tmp = $processes[$i].PsObject.Copy()
-    $tmp | add-member -notepropertyname "fromRelationships.isProcessOf" -notepropertyvalue $hostlookup[$hclient]
-    $tmp | add-member -notepropertyname "listenPorts.concatenated" -notepropertyvalue $listeningports
-    $output.add($tmp)
-    
+    if ($processes[$i].listenPorts.length -gt 0) {
+        $listeningports = $processes[$i].listenPorts
+        foreach ($port in $listeningports) {
+            $tmp = $processes[$i].PsObject.Copy()
+            $tmp | add-member -notepropertyname "fromRelationships.isProcessOf" -notepropertyvalue $hostlookup[$hclient]
+            $tmp | add-member -notepropertyname "listenport" -notepropertyvalue $port
+            $output.add($tmp)
+        }
+    }
 }
 
 
-$output | format-table
+#$output | format-table
 
 #$processes.length
 
