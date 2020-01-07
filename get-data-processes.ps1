@@ -20,9 +20,11 @@ for ($i=0; $i -lt $processes.length; $i++)  {
     
     #"fromRelationships": {
     #  "isProcessOf"
-    $hclient = $processes.fromRelationships.isProcessOf[0]
+    $hclient = $processes[$i].fromRelationships.isProcessOf[0]
+    $listeningports = $processes[$i].listenPorts -join ' ' 
     $tmp = $processes[$i].PsObject.Copy()
     $tmp | add-member -notepropertyname "fromRelationships.isProcessOf" -notepropertyvalue $hostlookup[$hclient]
+    $tmp | add-member -notepropertyname "listenPorts.concatenated" -notepropertyvalue $listeningports
     $output.add($tmp)
     
 }
