@@ -35,7 +35,7 @@ for ($i=0; $i -lt $processes.length; $i++)  {
 		$proc = $processes[$i].fromRelationships.isNetworkClientOf
 		
 		$proc | foreach {
-			$processisclientof += $processlookup[$_] + " "
+			$processisclientof += $processes[$i].displayName + " on " + $processlookup[$_] + " "
 		}
 		
 	}   
@@ -44,7 +44,7 @@ for ($i=0; $i -lt $processes.length; $i++)  {
           	$tmp = $processes[$i].PsObject.Copy()
             $tmp | add-member -notepropertyname "fromRelationships.isProcessOf" -notepropertyvalue $hostlookup[$hclient]
             $tmp | add-member -notepropertyname "listenport" -notepropertyvalue $port
-            $tmp | add-member -notepropertyname "processisclientof" -notepropertyvalue $processisclientof
+            $tmp | add-member -notepropertyname "called_by_process_on_server(s)" -notepropertyvalue $processisclientof
 			$output.add($tmp)
 			#
 			#
