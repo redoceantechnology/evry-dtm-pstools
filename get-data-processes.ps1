@@ -16,21 +16,45 @@ $hosts | foreach {
 
 $output = New-Object System.Collections.Generic.List[System.Object]
 
+$processlookup = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+
+# Loop through to make a lookup table for the processes -> hosts
+for ($i=0; $i -lt $processes.length; $i++)  {
+	$hclient = $processes[$i].fromRelationships.isProcessOf[0]
+	$processlookup.add($processes[$i].entityId,$hostlookup[$hclient])
+}	
+
 for ($i=0; $i -lt $processes.length; $i++)  {
     
     $hclient = $processes[$i].fromRelationships.isProcessOf[0]
-    if ($processes[$i].listenPorts.length -gt 0) {
-        $listeningports = $processes[$i].listenPorts
+    $processisclientof = ""
+	if ($processes[$i].toRelationships.isNetworkClientOf.length -gt 0) {
+		
+		$proc = $processes[$i].toRelationships.isNetworkClientOf
+		
+		$proc | foreach {
+			$processisclientof += $processlookup[$_] + " "
+		}
+		
+	}    
+	if ($processes[$i].listenPorts.length -gt 0) {
+		
+		$listeningports = $processes[$i].listenPorts
         foreach ($port in $listeningports) {
-            $tmp = $processes[$i].PsObject.Copy()
+          	$tmp = $processes[$i].PsObject.Copy()
             $tmp | add-member -notepropertyname "fromRelationships.isProcessOf" -notepropertyvalue $hostlookup[$hclient]
             $tmp | add-member -notepropertyname "listenport" -notepropertyvalue $port
-            $output.add($tmp)
+            $tmp | add-member -notepropertyname "processisclientof" -notepropertyvalue $processisclientof
+			$output.add($tmp)
+			#
+			#
+			#
+
         }
     }
 }
 
-
+#$processlookup
 #$output | format-table
 
 #$processes.length
