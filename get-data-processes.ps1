@@ -28,17 +28,17 @@ for ($i=0; $i -lt $processes.length; $i++)  {
     
     $hclient = $processes[$i].fromRelationships.isProcessOf[0]
     $processisclientof = ""
-	if ($processes[$i].toRelationships.isNetworkClientOf.length -gt 0) {
+	 
+	if ($processes[$i].listenPorts.length -gt 0) {
+		if ($processes[$i].fromRelationships.isNetworkClientOf.length -gt 0) {
 		
-		$proc = $processes[$i].toRelationships.isNetworkClientOf
+		$proc = $processes[$i].fromRelationships.isNetworkClientOf
 		
 		$proc | foreach {
 			$processisclientof += $processlookup[$_] + " "
 		}
 		
-	}    
-	if ($processes[$i].listenPorts.length -gt 0) {
-		
+	}   
 		$listeningports = $processes[$i].listenPorts
         foreach ($port in $listeningports) {
           	$tmp = $processes[$i].PsObject.Copy()
