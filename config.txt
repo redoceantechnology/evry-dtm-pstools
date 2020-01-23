@@ -1,0 +1,10 @@
+# Rename to config.ps1
+
+$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+
+
+$headers.add("Authorization", "Api-Token <INPUT API-TOKEN HERE>")
+$baseuri = "<base uri here>"
+
+$hostsuri = $baseuri + "/api/v1/entity/infrastructure/hosts?showMonitoringCandidates=true&includeDetails=true"
+$processessuri = $baseuri + "/api/v1/entity/infrastructure/processes?includeDetails=true"
